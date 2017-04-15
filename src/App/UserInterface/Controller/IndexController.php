@@ -2,13 +2,19 @@
 
 namespace App\UserInterface\Controller;
 
+use Application\Controller\BaseController;
 use Application\Http\Request\Request;
 use Application\Http\Response\Response;
 
-class IndexController
+class IndexController extends BaseController
 {
-    public function indexAction(Request $request)
+    public function action(Request $request): Response
     {
-        return new Response();
+        return $this->render(
+            'base.html.twig',
+            [
+                'content' => 1
+            ]
+        );
     }
 }

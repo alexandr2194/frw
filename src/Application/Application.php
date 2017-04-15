@@ -2,30 +2,51 @@
 
 namespace Application;
 
+use Application\Config\Config;
+use Application\Controller\BaseController;
+use Application\Exception\BadRequestException;
+use Application\Exception\InternalApplicationException;
+use Application\Exception\RouteNotFoundException;
+use Application\Http\Request\Request;
+use Application\Http\Response\Response;
+use Application\Router\Route;
+use Application\Router\Router;
+use Twig_Environment;
+
 class Application
 {
-    const CONFIG_PATH = __DIR__ . '';
-
-    /*
-     * @var array
-     */
+    /** @var Config */
     private $config;
+    /** @var Router */
+    private $router;
+    /** @var Twig_Environment */
+    private $templateEngine;
 
-    public function __construct(string $configPath = '')
+    public function __construct(Config $config, Router $router, Twig_Environment $templateEngine)
     {
-        $configPath ? $this->loadJsonConfig($configPath) : $this->loadJsonConfig(self::CONFIG_PATH);
+        $this->config = $config;
+        $this->router = $router;
+        $this->templateEngine = $templateEngine;
     }
 
-    private function loadJsonConfig(string $configPath)
+    public function launch(Request $request): Response
     {
-        $jsonConfigContent = file_get_contents($configPath);
-        if (!$jsonConfigContent) {
-            throw new \Exception("Error in process parsing config");
+        try {
+            $route = $this->router->getByPath($request->query()->all());
+            $controller = $this->getController($route);
+            return $controller->action($request);
+        } catch (BadRequestException $badRequestException) {
+            return new Response($badRequestException->getMessage(), Response::BAD_REQUEST_HTTP_RESPONSE_CODE);
+        } catch (RouteNotFoundException $routeNotFoundException) {
+            return new Response($routeNotFoundException->getMessage(), Response::NOT_FOUND_RESPONSE_CODE);
+        } catch (InternalApplicationException $internalApplicationException) {
+            return new Response($internalApplicationException->getMessage(), Response::INTERNAL_ERROR_HTTP_RESPONSE_CODE);
         }
-        $config = json_decode($jsonConfigContent, true);
-        if (json_last_error_msg() !== JSON_ERROR_NONE){
-            throw new \Exception(json_last_error_msg());
-        }
-        $this->config = $config;
+    }
+
+    private function getController(Route $route): BaseController
+    {
+        $controllerClassName = "App\\UserInterface\\Controller\\" . $route->getControllerClassName();
+        return new $controllerClassName($this->templateEngine);
     }
 }

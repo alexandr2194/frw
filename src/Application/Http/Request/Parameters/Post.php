@@ -1,31 +1,29 @@
 <?php
-
 namespace Application\Http\Request\Parameters;
 
 use Application\Exception\InternalApplicationException;
 
-class Headers
+class Post
 {
     /** @var array */
-    private $headers;
+    private $post;
 
-    public function __construct(array $headers)
+    public function __construct(array $post)
     {
-        $this->headers = $headers;
+        $this->post = $post;
     }
 
     public function get(string $key)
     {
         if (!$this->exist($key)) {
-            throw new InternalApplicationException(sprintf("Header with key '%s' not found.", $key));
+            throw new InternalApplicationException(sprintf("Post parameter with key '%s' not found.", $key));
         }
 
-        return $this->headers[$key];
-
+        return $this->post[$key];
     }
 
     private function exist(string $key): bool
     {
-        return isset($this->headers[$key]);
+        return isset($this->post[$key]);
     }
 }

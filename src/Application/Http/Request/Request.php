@@ -2,9 +2,13 @@
 
 namespace Application\Http\Request;
 
+use Application\Http\Request\Parameters\Files;
+use Application\Http\Request\Parameters\Get;
 use Application\Http\Request\Parameters\Headers;
+use Application\Http\Request\Parameters\Post;
+use Application\Http\Request\Parameters\Query;
 use Application\Http\Request\Parameters\Server;
-use Application\Http\Request\Parameters\Sessions;
+use Application\Http\Request\Parameters\Session;
 
 class Request
 {
@@ -13,20 +17,23 @@ class Request
     private $headers;
     /** @var Server */
     private $server;
-    /** @var Sessions */
+    /** @var Session */
     private $sessions;
-    /** @var array */
+    /** @var Post */
     private $post;
-    /** @var array */
+    /** @var Get */
     private $get;
+    /** @var Files */
+    private $files;
 
-    public function __construct(Headers $headers, Server $server, Sessions $sessions, array $post, array $get)
+    public function __construct(Headers $headers, Server $server, Session $sessions, Post $post, Get $get, Files $files)
     {
         $this->headers = $headers;
         $this->server = $server;
         $this->sessions = $sessions;
         $this->post = $post;
         $this->get = $get;
+        $this->files = $files;
     }
 
     public function headers(): Headers
@@ -39,18 +46,28 @@ class Request
         return $this->server;
     }
 
-    public function sessions(): Sessions
+    public function sessions(): Session
     {
         return $this->sessions;
     }
 
-    public function post(): array
+    public function post(): Post
     {
         return $this->post;
     }
 
-    public function get(): array
+    public function get(): Get
     {
         return $this->get;
+    }
+
+    public function files(): Files
+    {
+        return $this->files;
+    }
+
+    public function query(): Query
+    {
+        return new Query($this->server->get('REQUEST_URI'));
     }
 }

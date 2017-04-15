@@ -6,9 +6,7 @@ use Application\Exception\InternalApplicationException;
 
 class Server
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $server;
 
     public function __construct(array $server)
