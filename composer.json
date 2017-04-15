@@ -7,5 +7,10 @@
             "email": "hello-ira@yandex.ru"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    }
 }

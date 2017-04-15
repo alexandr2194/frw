@@ -1,15 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alexandr
- * Date: 15.04.17
- * Time: 13:02
- */
 
 namespace App\UserInterface\Controller;
 
+use Application\Http\Request\Request;
+use Application\Http\Response\Response;
 
 class IndexController
 {
-
+    public function indexAction(Request $request)
+    {
+        return new Response();
+    }
 }
