@@ -1,0 +1,11 @@
+{
+    "name": "irina/ajax-project",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Irina",
+            "email": "hello-ira@yandex.ru"
+        }
+    ],
+    "require": {}
+}
