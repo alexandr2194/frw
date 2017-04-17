@@ -1,7 +1,6 @@
 <?php
 namespace Application\Http\Request\Parameters;
 
-
 use Application\Exception\InternalApplicationException;
 
 class Files

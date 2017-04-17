@@ -7,12 +7,12 @@ class Route
     /** @var string */
     private $path;
     /** @var string */
-    private $controllerClassName;
+    private $controllerServiceName;
 
     public function __construct(string $path, string $controllerClassName)
     {
         $this->path = $path;
-        $this->controllerClassName = $controllerClassName;
+        $this->controllerServiceName = $controllerClassName;
     }
 
     public function getPath(): string
@@ -20,8 +20,8 @@ class Route
         return $this->path;
     }
 
-    public function getControllerClassName(): string
+    public function getControllerServiceName(): string
     {
-        return $this->controllerClassName;
+        return $this->controllerServiceName;
     }
 }

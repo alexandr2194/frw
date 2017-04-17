@@ -5,24 +5,20 @@ namespace Application\Controller;
 use Application\Http\Request\Request;
 use Application\Http\Response\Response;
 
-class BaseController
+abstract class BaseController
 {
     /** @var \Twig_Environment */
     private $templateEngine;
 
-    public function __construct(\Twig_Environment $templateEngine)
+    abstract public function action(Request $request): Response;
+
+    final public function load(\Twig_Environment $templateEngine)
     {
         $this->templateEngine = $templateEngine;
     }
 
-    public function action(Request $request): Response
+    final public function render(string $templatePath, array $parameters): Response
     {
+        return new Response($this->templateEngine->render($templatePath, $parameters), Response::OK_HTTP_RESPONSE_CODE);
     }
-
-    public function render(string $templatePath, array $options): Response
-    {
-        return new Response($this->templateEngine->render($templatePath, $options), Response::OK_HTTP_RESPONSE_CODE);
-    }
-
-
 }

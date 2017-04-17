@@ -11,6 +11,7 @@ use Application\Http\Request\Request;
 use Application\Http\Response\Response;
 use Application\Router\Route;
 use Application\Router\Router;
+use Application\ServiceContainer\ServiceContainer;
 use Twig_Environment;
 
 class Application
@@ -21,12 +22,14 @@ class Application
     private $router;
     /** @var Twig_Environment */
     private $templateEngine;
+    /** @var ServiceContainer */
+    private $container;
 
-    public function __construct(Config $config, Router $router, Twig_Environment $templateEngine)
+    public function __construct(Config $config, Router $router)
     {
         $this->config = $config;
         $this->router = $router;
-        $this->templateEngine = $templateEngine;
+        $this->container = new ServiceContainer($config);
     }
 
     public function launch(Request $request): Response
@@ -38,7 +41,7 @@ class Application
         } catch (BadRequestException $badRequestException) {
             return new Response($badRequestException->getMessage(), Response::BAD_REQUEST_HTTP_RESPONSE_CODE);
         } catch (RouteNotFoundException $routeNotFoundException) {
-            return new Response($routeNotFoundException->getMessage(), Response::NOT_FOUND_RESPONSE_CODE);
+            return new Response($this->templateEngine->render('errors/404.html.twig'), Response::NOT_FOUND_RESPONSE_CODE);
         } catch (InternalApplicationException $internalApplicationException) {
             return new Response($internalApplicationException->getMessage(), Response::INTERNAL_ERROR_HTTP_RESPONSE_CODE);
         }
@@ -46,7 +49,9 @@ class Application
 
     private function getController(Route $route): BaseController
     {
-        $controllerClassName = "App\\UserInterface\\Controller\\" . $route->getControllerClassName();
-        return new $controllerClassName($this->templateEngine);
+        $controller = $this->container->get('index_controller');
+        /** @var $controller BaseController */
+        return $controller;
     }
+
 }

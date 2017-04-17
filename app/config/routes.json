@@ -1,8 +1,6 @@
 {
   "index": {
-    "patterns": [
-      "/"
-    ],
-    "controller": "IndexController"
+    "path": "/",
+    "controller": "index_controller"
   }
 }

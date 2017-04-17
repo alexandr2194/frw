@@ -1,2 +1,5 @@
 {
+  "template_dir": "app/Resources/twig",
+  "cache_dir": "var/cache",
+  "services_path": "app/config/services.json"
 }

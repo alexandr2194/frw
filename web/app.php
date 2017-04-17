@@ -11,16 +11,14 @@ use Application\Http\Request\Parameters\Server;
 use Application\Http\Request\Parameters\Session;
 use Application\Http\Request\Request;
 use Application\Router\Router;
+use Application\ServiceContainer\ServiceContainer;
 
 session_start();
 
 $config = new Config(__DIR__ . "/../app/config/config.json");
 $router = new Router(__DIR__ . "/../app/config/routes.json");
 
-$twigLoader = new Twig_Loader_Filesystem(__DIR__ . "/../app/Resources/twig");
-$twig = new Twig_Environment($twigLoader, ['cache' => __DIR__ . "/../var/cache"]);
-
-$app = new Application($config, $router, $twig);
+$app = new Application($config, $router);
 
 $request = new Request(
     new Headers([
@@ -34,4 +32,6 @@ $request = new Request(
     new Files($_FILES)
 );
 
-echo $app->launch($request)->getMessage();
+$response = $app->launch($request);
+
+echo $response->getMessage();

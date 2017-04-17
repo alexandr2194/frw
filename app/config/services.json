@@ -1,0 +1,31 @@
+{
+  "query_builder": {
+    "class": "REST\\Infrastructure\\Storage\\MySqlQueryBuilder"
+  },
+  "storage": {
+    "class": "REST\\Infrastructure\\Storage\\MySqlStorage",
+    "arguments": [
+      "query_builder"
+    ]
+  },
+  "user_repository": {
+    "class": "REST\\Domain\\User\\UserRepository",
+    "arguments": [
+      "storage"
+    ]
+  },
+  "index_controller": {
+    "class": "REST\\UserInterface\\Controller\\IndexController",
+    "arguments": [
+      "user_repository"
+    ],
+    "call": [
+      {
+        "method": "load",
+        "arguments": [
+          "twig"
+        ]
+      }
+    ]
+  }
+}

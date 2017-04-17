@@ -7,6 +7,7 @@ use Application\Exception\RouteNotFoundException;
 class Router
 {
     const CONTROLLER_KEY = 'controller';
+    const PATH_KEY = 'path';
 
     /** @var string */
     private $routes;
@@ -34,17 +35,13 @@ class Router
     public function getByPath(string $path): Route
     {
         foreach ($this->routes as $route) {
-            foreach ($route['patterns'] as $pattern) {
-                $pattern = str_replace('/', '\/', $pattern);
-                if (preg_match('/\*$/', $pattern)) {
-                    $pattern = str_replace('*', '[a-z0-9]*$', $pattern);
-                    $pattern = '/^' . $pattern . '/';
-                } else {
-                    $pattern = '/^' . $pattern . '$/';
-                }
-                if (preg_match($pattern, $path)) {
-                    return new Route($path, $route[self::CONTROLLER_KEY]);
-                }
+            $pattern = str_replace('/', '\/', $route[self::PATH_KEY]);
+            if (preg_match('/\*/', $pattern)) {
+                $pattern = str_replace('*', '[a-zA-Z0-9-_]*', $pattern);
+            }
+            $pattern = '/^' . $pattern . '$/';
+            if (preg_match($pattern, $path)) {
+                return new Route($path, $route[self::CONTROLLER_KEY]);
             }
         }
         throw new RouteNotFoundException(sprintf("Route Not found for path '%s'.", $path));
